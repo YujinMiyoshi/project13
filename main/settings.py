@@ -127,4 +127,5 @@ LOGIN_URL = 'todo:login'
 
 LOGIN_REDIRECT_URL = 'todo:top'
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+

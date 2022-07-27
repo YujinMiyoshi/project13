@@ -6,7 +6,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
-class CustonUserManager(UserManager):
+class CustomUserManager(UserManager):
 
     use_in_migrations = True
 
@@ -19,12 +19,12 @@ class CustonUserManager(UserManager):
         user.save(using=self._db)
         return user
 
-    def create_user(self, email=None, password=None, **extra_fields):
+    def create_user(self, email, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
         return self._create_user(email, password, **extra_fields)
 
-    def create_superuser(self, email=None, password=None, **extra_fields):
+    def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 
@@ -36,15 +36,17 @@ class CustonUserManager(UserManager):
         return self._create_user(email, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
+    class Meta:
+        swappable = 'AUTH_USER_MODEL'
     """
     An abstract base class implementing a fully featured User model with
     admin-compliant permissions.
     Username and password are required. Other fields are optional.
     """
-
+    email = models.EmailField(_("email address"), unique=True)
     first_name = models.CharField(_("first name"), max_length=150, blank=True)
     last_name = models.CharField(_("last name"), max_length=150, blank=True)
-    email = models.EmailField(_("email address"), unique=True)
+    
     is_staff = models.BooleanField(
         _("staff status"),
         default=False,
@@ -60,7 +62,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
 
-    objects = UserManager()
+    objects = CustomUserManager()
 
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "email"
@@ -69,10 +71,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")
-
-    def clean(self):
-        super().clean()
-        self.email = self.__class__.objects.normalize_email(self.email)
 
     def get_full_name(self):
         """
