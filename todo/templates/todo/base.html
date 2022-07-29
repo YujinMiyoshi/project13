@@ -31,6 +31,9 @@
           <li>
             <a class="nav-item nav-link" href="{% url 'todo:logout' %}">ログアウト</a>
           </li>
+          <li>
+            <a class="nav-item nav-link" href="{% url 'todo:password_change' %}">パスワードの変更</a>
+          </li>
           {% else %}
           <li class="nav-item">
             <a class="nav-item nav-link" href="{% url 'todo:login' %}">

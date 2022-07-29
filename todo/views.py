@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView
 from django.contrib.auth import login
 from django.views.generic import TemplateView, CreateView, DetailView, UpdateView
-from .forms import LoginForm, UserCreateForm, UserUpdateForm
+from .forms import LoginForm, UserCreateForm, UserUpdateForm, MyPasswordChangeForm
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.sites.shortcuts import get_current_site
@@ -11,6 +11,7 @@ from django.core.signing import BadSignature, SignatureExpired, loads, dumps
 from django.http import Http404, HttpResponseBadRequest
 from django.shortcuts import redirect, resolve_url
 from django.template.loader import render_to_string
+from django.urls import reverse_lazy
 
 User = get_user_model()
 
@@ -101,4 +102,13 @@ class UserUpdate(OnlyYouMixin, UpdateView):
 
     def get_success_url(self):
         return resolve_url('todo:user_detail', pk=self.kwargs['pk'])
+
+class PasswordChange(PasswordChangeView):
+    form_class = MyPasswordChangeForm
+    success_url = reverse_lazy('todo:password_change_done')
+    template_name = 'todo/password_change.html'
+
+class PasswordChangeDone(PasswordChangeDoneView):
+    template_name = 'todo/password_change_done.html'
+
 # Create your views here.
