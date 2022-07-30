@@ -127,5 +127,5 @@ LOGIN_URL = 'todo:login'
 
 LOGIN_REDIRECT_URL = 'todo:top'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

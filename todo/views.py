@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.contrib.auth import login
 from django.views.generic import TemplateView, CreateView, DetailView, UpdateView
-from .forms import LoginForm, UserCreateForm, UserUpdateForm, MyPasswordChangeForm
+from .forms import LoginForm, UserCreateForm, UserUpdateForm, MyPasswordChangeForm, MyPasswordResetForm, MySetPasswordForm
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.sites.shortcuts import get_current_site
@@ -110,5 +110,23 @@ class PasswordChange(PasswordChangeView):
 
 class PasswordChangeDone(PasswordChangeDoneView):
     template_name = 'todo/password_change_done.html'
+
+class PasswordReset(PasswordResetView):
+    subject_template_name = 'todo/mail_template/password_reset/subject.txt'
+    email_template_name = 'todo/mail_template/password_reset/message.txt'
+    template_name = 'todo/password_reset_form.html'
+    form_class = MyPasswordResetForm
+    success_url = reverse_lazy('todo:password_reset_done')
+
+class PasswordResetDone(PasswordResetDoneView):
+    template_name = 'todo/password_reset_done.html'
+
+class PasswordResetConfirm(PasswordResetConfirmView):
+    form_class = MySetPasswordForm
+    success_url = reverse_lazy('todo:password_reset_complete')
+    template_name = 'todo/password_reset_confirm.html'
+
+class PasswordResetComplete(PasswordResetCompleteView):
+    template_name = 'todo/password_reset_complete.html'
 
 # Create your views here.
