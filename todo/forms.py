@@ -73,5 +73,9 @@ class EmailChangeForm(forms.ModelForm):
 class ToDoForm(forms.ModelForm):
     class Meta:
         model = ToDo
-        exclude = ('created_at', 'updated_at',)
+        exclude = ('user','created_at', 'updated_at',)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'

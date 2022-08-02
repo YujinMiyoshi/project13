@@ -14,7 +14,7 @@
 <body>
     <!-- ナビバー -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="{% url 'todo:top' %}">MyToDo</a>
+      <a class="navbar-brand" href="{% url 'todo:todo_list' %}">MyToDo</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -23,24 +23,27 @@
         <ul class="navbar-nav mr-auto">
           {% if user.is_authenticated %}
           <li>
-            <a class="nav-item nav-link" href="{% url 'todo:user_detail' user.pk %}">ユーザー情報閲覧</a>
+            <a class="nav-item nav-link" href="{% url 'todo:todo_create' user.pk %}">+ New</a>
           </li>
           <li>
-            <a class="nav-item nav-link" href="{% url 'todo:user_update' user.pk %}">ユーザー情報更新</a>
+            <a class="nav-item nav-link" href="{% url 'todo:user_detail' user.pk %}">ユーザー情報</a>
           </li>
           <li>
-            <a class="nav-item nav-link" href="{% url 'todo:logout' %}">ログアウト</a>
+            <a class="nav-item nav-link" href="{% url 'todo:user_update' user.pk %}">ユーザー情報を変更</a>
           </li>
           <li>
-            <a class="nav-item nav-link" href="{% url 'todo:password_change' %}">パスワードの変更</a>
+            <a class="nav-item nav-link" href="{% url 'todo:password_change' %}">パスワードを変更</a>
           </li>
           <li>
-            <a class="nav-item nav-link" href="{% url 'todo:email_change' %}">メールアドレスの変更</a>
+            <a class="nav-item nav-link" href="{% url 'todo:email_change' %}">Eメールアドレスを変更</a>
+          </li>
+          <li>
+            <a class="nav-item nav-link" href="{% url 'todo:logout' %}">Logout</a>
           </li>
           {% else %}
           <li class="nav-item">
             <a class="nav-item nav-link" href="{% url 'todo:login' %}">
-            ようこそ、ゲスト！ログインはこちら
+            Login
           </a>
           </li>
           {% endif %}

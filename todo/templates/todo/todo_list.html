@@ -1,0 +1,14 @@
+{% extends "todo/base.html" %}
+{% block content %}
+<table class="table">
+    <tbody>
+        {% for todo in todo_list %}
+        <tr>
+            <th><a href="{% url 'todo:todo_detail' todo.pk %}" class="btn btn-success btn-lg btn-block">{{ todo }}</a></th>
+        </tr>
+        {% empty %}
+        <a class="btn btn-primary btn-lg btn-block" href="{% url 'todo:todo_create' user.pk %}">+ New</a>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

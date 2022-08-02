@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Top, Login, Logout, UserCreate, UserCreateDone, UserCreateComplete, UserDetail, UserUpdate, PasswordChange, PasswordChangeDone, PasswordReset, PasswordResetDone, PasswordResetConfirm, PasswordResetComplete, EmailChange, EmailChangeDone, EmailChangeComplete
+from .views import Top, Login, Logout, UserCreate, UserCreateDone, UserCreateComplete, UserDetail, UserUpdate, PasswordChange, PasswordChangeDone, PasswordReset, PasswordResetDone, PasswordResetConfirm, PasswordResetComplete, EmailChange, EmailChangeDone, EmailChangeComplete, ToDoList, ToDoListWithPK, ToDoDetail, ToDoCreate, ToDoUpdate, ToDoDelete
 
 app_name = 'todo'
 
@@ -21,4 +21,10 @@ urlpatterns = [
     path('email/change/', EmailChange.as_view(), name='email_change'),
     path('email/change/done/', EmailChangeDone.as_view(), name='email_change_done'),
     path('email/change/complete/<str:token>/', EmailChangeComplete.as_view(), name='email_change_complete'),
+    path('todo/', ToDoList.as_view(), name='todo_list'),
+    path('todo/<int:pk>', ToDoListWithPK.as_view(), name='todo_pk_list'),
+    path('todo/detail/<int:pk>/', ToDoDetail.as_view(), name='todo_detail'),
+    path('todo/create/<int:pk>/', ToDoCreate.as_view(), name='todo_create'),
+    path('todo/update/<int:pk>/', ToDoUpdate.as_view(), name='todo_update'),
+    path('todo/delete/<int:pk>/', ToDoDelete.as_view(), name='todo_delete'),
 ]

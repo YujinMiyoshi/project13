@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.contrib.auth import login
-from django.views.generic import TemplateView, CreateView, DetailView, UpdateView, FormView
-from .forms import LoginForm, UserCreateForm, UserUpdateForm, MyPasswordChangeForm, MyPasswordResetForm, MySetPasswordForm, EmailChangeForm
+from django.views.generic import TemplateView, CreateView, DetailView, UpdateView, FormView, ListView, DeleteView
+from .forms import LoginForm, UserCreateForm, UserUpdateForm, MyPasswordChangeForm, MyPasswordResetForm, MySetPasswordForm, EmailChangeForm, ToDoForm
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.sites.shortcuts import get_current_site
@@ -13,6 +13,7 @@ from django.shortcuts import redirect, resolve_url
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.core.mail import send_mail
+from .models import ToDo
 
 User = get_user_model()
 
@@ -79,7 +80,7 @@ class UserCreateComplete(TemplateView):
             else:
                 if not user.is_active:
                     user.is_active = True
-                    #login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     user.save()
                     return super().get(request, **kwargs)
 
@@ -176,5 +177,58 @@ class EmailChangeComplete(LoginRequiredMixin, TemplateView):
             request.user.email = new_email
             request.user.save()
             return super().get(request, **kwargs)
+
+class ToDoList(LoginRequiredMixin, ListView):
+    model = ToDo
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['todo_list'] = ToDo.objects.filter(user=self.request.user)
+        return context
+
+class ToDoListWithPK(OnlyYouMixin, ListView):
+    model = ToDo
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['todo_list'] = ToDo.objects.filter(user__pk=self.kwargs['pk'])
+        return context
+
+class OnlyTodoMixin(UserPassesTestMixin):
+    raise_exception = True
+
+    def test_func(self):
+        todo = get_object_or_404(ToDo, pk=self.kwargs['pk'])
+        return todo.user == self.request.user or self.request.user.is_superuser
+
+class ToDoDetail(OnlyTodoMixin, DetailView):
+    model = ToDo
+    template_name = 'todo/todo_detail.html'
+
+class ToDoUpdate(OnlyTodoMixin, UpdateView):
+    model = ToDo
+    form_class = ToDoForm
+    template_name = 'todo/todo_form.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return resolve_url('todo:todo_detail', pk=self.kwargs['pk'])
+
+class ToDoDelete(OnlyTodoMixin, DeleteView):
+    model = ToDo
+    success_url = reverse_lazy('todo:todo_list')
+
+class ToDoCreate(OnlyYouMixin, CreateView):
+    model = ToDo
+    form_class = ToDoForm
+    template_name = 'todo/todo_form.html'
+    success_url = reverse_lazy('todo:todo_list')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 # Create your views here.

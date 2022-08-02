@@ -125,7 +125,7 @@ AUTH_USER_MODEL = 'todo.User'
 
 LOGIN_URL = 'todo:login'
 
-LOGIN_REDIRECT_URL = 'todo:top'
+LOGIN_REDIRECT_URL = 'todo:todo_list'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

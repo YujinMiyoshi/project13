@@ -1,0 +1,30 @@
+{% extends "todo/base.html" %}
+{% block content %}
+<table class="table">
+    <tbody>
+        <tr>
+            <th>タイトル</th>
+            <td>{{ todo.title }}</td>
+        </tr>
+        <tr>
+            <th>内容</th>
+            <td>{{ todo.content }}</td>
+        </tr>
+        <tr>
+            <th>作成日時</th>
+            <td>{{ todo.created_at }}</td>
+        </tr>
+        <tr>
+            <th>更新日時</th>
+            <td>{{ todo.updated_at }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<a href="{% url 'todo:todo_update' todo.pk %}" class="btn btn-success btn-lg btn-block">✍🏻</a><br>
+
+<form action="{% url 'todo:todo_delete' todo.pk %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success btn-lg">🗑️</button>
+</form>
+{% endblock %}
