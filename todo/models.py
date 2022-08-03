@@ -6,6 +6,8 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
+from_email = settings.EMAIL_HOST_USER
+
 class CustomUserManager(UserManager):
 
     use_in_migrations = True
