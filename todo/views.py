@@ -82,9 +82,10 @@ class UserCreateComplete(TemplateView):
                     user.is_active = True
                     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     user.save()
-                    return super().get(request, **kwargs)
+                    return redirect('todo:todo_list')
 
         return HttpResponseBadRequest()
+    
 
 class OnlyYouMixin(UserPassesTestMixin):
     raise_exception = True
